@@ -11,8 +11,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(ChatSuccessState(msgs: const [])) {
     on<ChatGenerateNewMsgEvent>(chatGenerateNewMsgEvent);
   }
+
   List<ChatMsgModel> msgs = [];
   bool loading = false;
+
   FutureOr<void> chatGenerateNewMsgEvent(
       ChatGenerateNewMsgEvent event, Emitter<ChatState> emit) async {
     msgs.add(ChatMsgModel(

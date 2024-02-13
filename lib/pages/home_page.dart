@@ -63,56 +63,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Expanded(
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 12),
-                        itemCount: msgs.length,
-                        itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: index.isOdd
-                                ? Colors.white
-                                : Theme.of(context).primaryColor,
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    msgs[index].role == 'user'
-                                        ? 'User'
-                                        : 'Gemini',
-                                    style: TextStyle(
-                                      color: msgs[index].role == 'user'
-                                          ? Colors.white
-                                          : Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(14, 0, 14, 6),
-                                child: Text(
-                                  msgs[index].parts.first.text,
-                                  style: TextStyle(
-                                    color: index.isOdd
-                                        ? Colors.black
-                                        : Colors.white,
-                                    fontWeight: index.isOdd
-                                        ? FontWeight.w400
-                                        : FontWeight.w700,
-                                    fontSize: index.isOdd ? 18 : 20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      child: chatView(msgs),
                     ),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -187,6 +138,49 @@ class _HomePageState extends State<HomePage> {
               return Container();
           }
         },
+      ),
+    );
+  }
+
+  ListView chatView(List<ChatMsgModel> msgs) {
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemCount: msgs.length,
+      itemBuilder: (context, index) => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: index.isOdd ? Colors.white : Theme.of(context).primaryColor,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  msgs[index].role == 'user' ? 'User' : 'Gemini',
+                  style: TextStyle(
+                    color: msgs[index].role == 'user'
+                        ? Colors.white
+                        : Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 6),
+              child: Text(
+                msgs[index].parts.first.text,
+                style: TextStyle(
+                  color: index.isOdd ? Colors.black : Colors.white,
+                  fontWeight: index.isOdd ? FontWeight.w400 : FontWeight.w700,
+                  fontSize: index.isOdd ? 18 : 20,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
