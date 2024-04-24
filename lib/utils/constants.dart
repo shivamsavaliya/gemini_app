@@ -1,1 +1,1 @@
-const apiKey = "API_KEY";
+const apiKey = "your gemini id api key";
