@@ -14,18 +14,41 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController controller = TextEditingController();
   final ChatBloc chatBloc = ChatBloc();
+  bool imagePicked = false;
+  // final ImagePicker _picker = ImagePicker();
+  // XFile? image;
+
+  @override
+  void initState() {
+    chatBloc.add(ChatInitialEvent());
+    super.initState();
+  }
+
+  // Future<void> pickImageFromGallery() async {
+  //   image = await _picker.pickImage(source: ImageSource.gallery);
+  //   if (image != null) {
+  //     log(image!.name.toString());
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<ChatBloc, ChatState>(
         bloc: chatBloc,
+        listenWhen: (previous, current) => current is ChatActionState,
+        buildWhen: (previous, current) => current is! ChatActionState,
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is ImagePickedSuccessState) {
+            ChatSuccessState(msgs: (state as ChatSuccessState).msgs);
+            imagePicked = true;
+          }
         },
         builder: (context, state) {
           switch (state.runtimeType) {
             case ChatSuccessState:
               List<ChatMsgModel> msgs = (state as ChatSuccessState).msgs;
+
               return Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
@@ -53,7 +76,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              chatBloc.add(PickImageEvent());
+                            },
                             icon: const Icon(
                               Icons.image_rounded,
                               color: Colors.white,

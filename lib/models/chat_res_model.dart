@@ -11,82 +11,90 @@ String chatResponseModelToJson(ChatResponseModel data) =>
     json.encode(data.toJson());
 
 class ChatResponseModel {
-  final List<Candidate> candidates;
-  final PromptFeedback promptFeedback;
+  final List<Candidate>? candidates;
 
   ChatResponseModel({
-    required this.candidates,
-    required this.promptFeedback,
+    this.candidates,
   });
 
   factory ChatResponseModel.fromJson(Map<String, dynamic> json) =>
       ChatResponseModel(
-        candidates: List<Candidate>.from(
-            json["candidates"].map((x) => Candidate.fromJson(x))),
-        promptFeedback: PromptFeedback.fromJson(json["promptFeedback"]),
+        candidates: json["candidates"] == null
+            ? []
+            : List<Candidate>.from(
+                json["candidates"]!.map((x) => Candidate.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "candidates": List<dynamic>.from(candidates.map((x) => x.toJson())),
-        "promptFeedback": promptFeedback.toJson(),
+        "candidates": candidates == null
+            ? []
+            : List<dynamic>.from(candidates!.map((x) => x.toJson())),
       };
 }
 
 class Candidate {
-  final Content content;
-  final String finishReason;
-  final int index;
-  final List<SafetyRating> safetyRatings;
+  final Content? content;
+  final String? finishReason;
+  final int? index;
+  final List<SafetyRating>? safetyRatings;
 
   Candidate({
-    required this.content,
-    required this.finishReason,
-    required this.index,
-    required this.safetyRatings,
+    this.content,
+    this.finishReason,
+    this.index,
+    this.safetyRatings,
   });
 
   factory Candidate.fromJson(Map<String, dynamic> json) => Candidate(
-        content: Content.fromJson(json["content"]),
+        content:
+            json["content"] == null ? null : Content.fromJson(json["content"]),
         finishReason: json["finishReason"],
         index: json["index"],
-        safetyRatings: List<SafetyRating>.from(
-            json["safetyRatings"].map((x) => SafetyRating.fromJson(x))),
+        safetyRatings: json["safetyRatings"] == null
+            ? []
+            : List<SafetyRating>.from(
+                json["safetyRatings"]!.map((x) => SafetyRating.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "content": content.toJson(),
+        "content": content?.toJson(),
         "finishReason": finishReason,
         "index": index,
-        "safetyRatings":
-            List<dynamic>.from(safetyRatings.map((x) => x.toJson())),
+        "safetyRatings": safetyRatings == null
+            ? []
+            : List<dynamic>.from(safetyRatings!.map((x) => x.toJson())),
       };
 }
 
 class Content {
-  final List<Part> parts;
-  final String role;
+  final List<Part>? parts;
+  final String? role;
 
   Content({
-    required this.parts,
-    required this.role,
+    this.parts,
+    this.role,
   });
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
-        parts: List<Part>.from(json["parts"].map((x) => Part.fromJson(x))),
+        parts: json["parts"] == null
+            ? []
+            : List<Part>.from(json["parts"]!.map((x) => Part.fromJson(x))),
         role: json["role"],
       );
 
   Map<String, dynamic> toJson() => {
-        "parts": List<dynamic>.from(parts.map((x) => x.toJson())),
+        "parts": parts == null
+            ? []
+            : List<dynamic>.from(parts!.map((x) => x.toJson())),
         "role": role,
       };
 }
 
 class Part {
-  final String text;
+  final String? text;
 
   Part({
-    required this.text,
+    this.text,
   });
 
   factory Part.fromJson(Map<String, dynamic> json) => Part(
@@ -99,12 +107,12 @@ class Part {
 }
 
 class SafetyRating {
-  final String category;
-  final String probability;
+  final String? category;
+  final String? probability;
 
   SafetyRating({
-    required this.category,
-    required this.probability,
+    this.category,
+    this.probability,
   });
 
   factory SafetyRating.fromJson(Map<String, dynamic> json) => SafetyRating(
@@ -115,23 +123,5 @@ class SafetyRating {
   Map<String, dynamic> toJson() => {
         "category": category,
         "probability": probability,
-      };
-}
-
-class PromptFeedback {
-  final List<SafetyRating> safetyRatings;
-
-  PromptFeedback({
-    required this.safetyRatings,
-  });
-
-  factory PromptFeedback.fromJson(Map<String, dynamic> json) => PromptFeedback(
-        safetyRatings: List<SafetyRating>.from(
-            json["safetyRatings"].map((x) => SafetyRating.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "safetyRatings":
-            List<dynamic>.from(safetyRatings.map((x) => x.toJson())),
       };
 }

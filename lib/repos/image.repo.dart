@@ -1,23 +1,37 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
-import 'package:gemini_app/models/chat_msg_model.dart';
-import 'package:gemini_app/models/chat_res_model.dart';
+import 'package:gemini_app/models/image_res_model.dart';
 import 'package:gemini_app/utils/constants.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ChatRepo {
-  static Future<ChatResponseModel?> chatTextGenerationRepo(
-      List<ChatMsgModel> msgs) async {
+class ImageRepo {
+  static Future<ImageResponseModel?> imageTextGenaration(
+      List<XFile>? files, String msg) async {
     try {
       Dio dio = Dio();
       final response = await dio.post(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$apiKey",
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=$apiKey",
           data: {
-            "contents": msgs.map((e) => e.toMap()).toList(),
+            "contents": [
+              {
+                "parts": [
+                  {
+                    "inlineData": {
+                      "mimeType": "image/jpeg",
+                      "data": files,
+                    }
+                  },
+                  {
+                    "text": msg,
+                  }
+                ]
+              }
+            ],
             "generationConfig": {
-              "temperature": 0.9,
-              "topK": 1,
+              "temperature": 0.4,
+              "topK": 32,
               "topP": 1,
-              "maxOutputTokens": 2048,
+              "maxOutputTokens": 4096,
               "stopSequences": []
             },
             "safetySettings": [
@@ -39,12 +53,13 @@ class ChatRepo {
               }
             ]
           });
-      ChatResponseModel modelData = ChatResponseModel.fromJson(response.data);
+      ImageResponseModel modelData = ImageResponseModel.fromJson(response.data);
       if (response.statusCode! >= 200 && response.statusCode! <= 300) {
+        log(modelData.toString());
         return modelData;
       }
     } catch (e) {
-      log("chat response---" + e.toString());
+      log(e.toString());
     }
     return null;
   }
